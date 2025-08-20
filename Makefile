@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Iinclude
-SRC = $(wildcard src/*.c)
+SRC = $(shell find src -name "*.c")
 BIN = out/main
 
 default: run

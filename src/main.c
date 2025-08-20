@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "exercises/one.h"
 
 void clearDisplay() {
     #ifdef _WIN32
@@ -38,22 +39,42 @@ Exercise NewExercise(char* title, void (*execute)(void)) {
     return exercise;
 }
 
-Exercise[] exercisesFactory() {
-static Exercise exercises[] = {
-    // NewExercise("Exercício 1", one),
-    // NewExercise("Exercício 2", two),
-    // NewExercise("Exercício 3", three),
-    // NewExercise("Exercício 4", four),
-    // NewExercise("Exercício 5", five),
-    // NewExercise("Exercício 6", six),
-    // NewExercise("Exercício 7", seven),
-    // NewExercise("Exercício 8", eight),
-    // NewExercise("Exercício 9", nine),
-    // NewExercise("Exercício 10", ten),
-};
+Exercise* exercisesFactory(size_t *count) {
+    static Exercise exercises[] = {
+        {"Receba via teclado um número qualquer e exiba o seu sucessor e seu antecessor.", one}
+        // NewExercise("Exercício 2", two),
+        // NewExercise("Exercício 3", three),
+    };
+
+    *count = sizeof(exercises) / sizeof(exercises[0]); // quantidade
     return exercises;
 }
 
 int main() {
-    showBanner();
+    size_t count;
+    Exercise* list = exercisesFactory(&count);
+
+    int opcao = -1;
+    while (opcao != 0) {
+        clearDisplay();
+        showBanner();
+
+        for (size_t i = 0; i < count; i++) {
+            printf("  %zu) %s\n", i + 1, list[i].title);
+        }
+        printf("  0) Sair\n");
+        printf("  ═══════════════════════════════════════════════════════════════════════════\n");
+        printf("  Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+        clearDisplay();
+
+        if (opcao > 0 && (size_t)opcao <= count) {
+            showExercise(list[opcao - 1].title);
+            list[opcao - 1].execute();
+            printf("\nPressione ENTER para voltar ao menu...");
+            getchar(); getchar(); // consome ENTER
+        }
+    }
+    return 0;
 }
